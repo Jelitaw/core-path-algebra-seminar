@@ -1,0 +1,12 @@
+\section{Discussion}
+
+The path algebra proposed by Angles et al. provides an algebraic framework for describing path queries in graph query languages \cite{angles2024path}. Its main idea is to treat paths as query objects and to define operations for filtering, combining, and recursively extending them.
+A key advantage of the algebra is its treatment of paths as first-class objects. Since the operators return sets of paths, the result of one operation can be used as the input to another. This makes it possible to construct complex path queries from smaller algebraic expressions \cite{angles2024path}.
+Another important feature is the explicit modeling of recursion through the operator $\phi$. Different variants of the recursive operator can represent walk, trail, acyclic, simple, and shortest-path semantics \cite{angles2024path}.
+
+From a systems perspective, the algebra can serve as a basis for logical query planning. An algebraic expression can be represented as a tree of operations, which makes the individual steps of query evaluation explicit \cite{angles2024path}.
+This also creates opportunities for query optimization, for example by changing the order of operations or by applying equivalent algebraic expressions. The actual execution of these plans, however, requires physical operators and cost models that are outside the scope of the proposed algebra.
+
+A limitation of the framework is that it does not define physical execution strategies or cost models. In particular, recursive path evaluation can become expensive on large or highly cyclic graphs. Efficient implementations therefore require physical operators and optimization techniques that are not part of the logical algebra itself.
+
+Despite these limitations, the framework represents an important step toward a standardized and implementation-independent foundation for graph query processing.

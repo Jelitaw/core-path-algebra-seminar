@@ -1,2 +1,0 @@
-# core-path-algebra-seminar
-

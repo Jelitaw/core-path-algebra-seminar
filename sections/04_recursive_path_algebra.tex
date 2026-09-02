@@ -1,0 +1,84 @@
+\section{Recursive Path Algebra}
+
+A central requirement of graph query languages is the ability to express recursive navigation over paths of unbounded length. In the path algebra, recursion is represented by the operator $\phi$, which repeatedly applies path concatenation to construct paths of increasing length \cite{angles2024path}.
+The recursive operator can be understood as a repeated self-join: starting with a set of paths, it combines the paths with the original set and continues until no new paths are produced. This corresponds to the Kleene plus operation used in regular expressions \cite{angles2024path}.
+Intuitively, recursion repeatedly extends short paths into longer ones by concatenating compatible path fragments. Starting from a base set of edges, each iteration adds exactly one additional step, gradually generating longer and more complex paths.
+
+
+\subsection{Recursive Operator}
+
+Let $S$ be a set of paths. The recursive operator $\phi$ repeatedly joins the paths in $S$ with the paths generated in the previous iteration \cite{angles2024path}:
+
+\[
+\phi_0(S) = S
+\]
+
+and for $i > 0$,
+
+\[
+\phi_i(S)
+=
+\left(\phi_{i-1}(S) \bowtie S\right)
+\cup
+\phi_{i-1}(S).
+\]
+
+The recursion continues as long as new paths are produced. In other words, the operator starts with the paths in $S$, repeatedly extends them by concatenating paths from $S$, and stops when an iteration does not add any new paths. The resulting operator corresponds to the Kleene plus operation, producing paths of one or more repetitions of the input pattern \cite{angles2024path}.
+
+To illustrate the recursive process, consider the following base set of edges:
+
+\[
+S = \{ A \rightarrow B,\; B \rightarrow C,\; C \rightarrow B \}.
+\]
+
+The first iteration contains the original edges:
+
+\[
+S^{(1)} = \{ AB,\; BC,\; CB \}.
+\]
+
+In the next iteration, compatible paths can be concatenated:
+
+\[
+S^{(2)}
+=
+S^{(1)} \bowtie S
+=
+\{ ABC,\; BCB,\; CBC \}.
+\]
+
+A further iteration produces longer paths, for example:
+
+\[
+S^{(3)}
+=
+S^{(2)} \bowtie S
+=
+\{ ABCB,\; BCBC,\; CBCB \}.
+\]
+
+Thus, repeated application of the join operator generates progressively longer paths.
+
+\subsection{Path Semantics}
+
+Graph query languages distinguish between different restrictions on path repetition in order to control expressiveness and computational complexity. These semantics can be modeled as constraint operators applied to the recursive closure:
+
+\begin{itemize}
+    \item \textbf{Walk semantics}: no restrictions on node or edge repetition; $\phi$ operates over all finite concatenations.
+    \item \textbf{Trail semantics}: edges may not repeat within a path, restricting concatenation to edge-simple expansions.
+    \item \textbf{Acyclic semantics}: nodes may not repeat, enforcing cycle-free path construction.
+    \item \textbf{Simple path semantics}: no repeated nodes, except that the first and last node may be the same.
+    \item \textbf{Shortest path semantics}: selects minimal-length paths from the recursively generated set.
+\end{itemize}
+
+%{\color{blue}
+Using the example above, the paths in $S^{(3)}$ and $S^{(4)}$ clearly illustrate that recursion over concatenation naturally produces walks. However, at some point some of these walks are no longer trails or simple paths, since nodes such as $B$ and $C$ are revisited multiple times (e.g., $A \rightarrow B \rightarrow C \rightarrow B$). This highlights why additional semantic restrictions are necessary in practical query languages to prevent uncontrolled path growth.
+
+
+\subsection{Key Issue: Cyclic Graphs and Infinite Expansions}
+
+The main difficulty with recursive path evaluation appears in graphs containing cycles. In such graphs, unrestricted recursion can repeatedly traverse the same cycle and therefore produce infinitely many distinct paths. Although the graph itself is finite, the number of possible walks can be infinite \cite{angles2024path}.
+
+For example, if a path can reach a cycle between two nodes, the recursive operator can continue traversing that cycle and generate paths of increasing length. Under the default walk semantics, the evaluation may therefore never terminate \cite{angles2024path}.
+
+The path semantics introduced above provide a way to control this behavior. Restricting recursion to trails, acyclic paths, simple paths, or shortest paths limits which paths can be generated and can therefore produce finite results on finite graphs \cite{angles2024path}.

@@ -1,0 +1,78 @@
+\section{Mapping to GQL and SQL/PGQ}
+
+The path algebra can be used to describe path queries from GQL and SQL/PGQ using a common set of operators \cite{angles2024path}. In particular, the path modes of these languages can be represented using recursive operators together with grouping, ordering, and projection. This makes it possible to describe the evaluation of a path query as a sequence of algebraic operations.
+
+\subsection{Selectors and Restrictors}
+
+GQL uses selectors and restrictors to control the paths produced by a path query \cite{angles2024path}:
+\begin{itemize}
+    \item \textbf{Restrictors}: determine which paths are considered during recursive evaluation, such as WALK, TRAIL, SIMPLE, and ACYCLIC.
+    \item \textbf{Selectors}: determine which of the resulting paths are returned, such as ALL, ANY, and ANY SHORTEST.
+\end{itemize}
+
+\subsection{Algebraic Encoding}
+
+Each selector-restrictor combination can be expressed using a combination of:
+
+\begin{itemize}
+    \item recursion operator ($\phi$),
+    \item grouping operator ($\gamma$),
+    \item ordering operator ($\tau$),
+    \item projection operator ($\pi$).
+\end{itemize}
+
+\subsection{Example Translation}
+
+Consider the following GQL query:
+
+\begin{verbatim}
+MATCH ANY SHORTEST TRAIL
+p = (x)-[:KNOWS]->+(y)
+\end{verbatim}
+
+The query asks for one shortest trail between each pair of connected nodes. The
+TRAIL restrictor means that edges cannot be repeated, while ANY SHORTEST
+selects one shortest path for each source-target pair \cite{angles2024path}.
+
+The corresponding algebraic evaluation can be understood as a sequence of
+operations. First, the edges labeled \texttt{KNOWS} are selected. The recursive
+operator $\phi_{\text{Trail}}$ then generates paths that satisfy the TRAIL
+semantics. The resulting paths are grouped by their source and target nodes,
+ordered by path length, and finally projected so that one path is returned from
+each group.
+
+In simplified form, the structure of the translation is:
+
+\[
+\pi \Big(
+    \tau \big(
+        \gamma \big(
+            \phi_{\text{Trail}}(
+                \sigma_{\text{KNOWS}}(\text{Edges}(G))
+            )
+        \big)
+    \big)
+\Big).
+\]
+
+The exact parameters of $\gamma$, $\tau$, and $\pi$ determine how paths are
+grouped, ordered, and selected. This example shows how a GQL path mode can be
+represented as a composition of algebraic operators \cite{angles2024path}.
+
+\subsection{Expressiveness}
+
+The path algebra can represent the selector-restrictor combinations defined by
+GQL and SQL/PGQ \cite{angles2024path}. At the same time, the algebra allows
+additional combinations because grouping, ordering, projection, and recursion
+are represented as separate operators.
+
+For example, the algebra can combine a recursive trail operator with grouping
+by path length and then select one path from each group. Such a combination is
+not directly provided by the GQL path mode syntax \cite{angles2024path}.
+
+The authors show that the different choices of grouping, ordering, projection,
+and recursion result in a larger space of possible expressions than the
+selector-restrictor combinations defined by GQL. This means that the algebra
+is not limited to reproducing existing language features, but can also describe
+path operations that are not directly available in the current standards
+\cite{angles2024path}.

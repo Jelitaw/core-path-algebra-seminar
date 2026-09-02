@@ -1,0 +1,26 @@
+\section{Relation to Formal Foundations}
+
+The path algebra is related to several established formalisms in database and automata theory. Its operators resemble those of relational algebra, while its recursive operator is closely related to the regular expressions used in regular path queries. Semiring-based approaches provide another point of comparison, since they also use algebraic operations to combine paths.
+
+\subsection{Relation to Relational Algebra}
+
+The path algebra is closely related to relational algebra. Both use operators such as selection ($\sigma$), union ($\cup$), and join ($\bowtie$), but they operate on different kinds of objects. In relational algebra, the operators are applied to relations containing tuples, whereas the path algebra operates on sets of paths \cite{codd1970,angles2024path}.
+In the path algebra, selection filters paths according to predicates over their nodes and edges, union combines path sets, and join concatenates compatible paths. The join operation therefore has a different meaning from a traditional relational join, since its result is a longer path rather than a tuple
+The main difference is that paths preserve the order and connectivity of the nodes and edges they contain. This makes the path algebra suitable for navigation-oriented queries, where the path itself can be part of the query result.
+
+\subsection{Relation to Automata Theory}
+
+Regular path queries (RPQs) are commonly described using regular expressions over edge labels. These expressions can be translated into finite automata, which can then be used to evaluate whether paths in a graph satisfy the given pattern \cite{mendelzon1995}.
+
+The path algebra describes similar recursive path patterns using algebraic operators. In particular, the recursive operator $\phi$ corresponds to repeated path concatenation and is related to the Kleene plus operation of regular expressions. Zero-length paths can additionally be included when Kleene star semantics are required \cite{angles2024path}.
+
+The two approaches therefore emphasize different aspects of path querying. Automata provide a model for recognizing paths that satisfy a regular expression, while the path algebra describes how sets of paths can be constructed and manipulated using algebraic operators. The approaches are therefore complementary rather than competing formalisms.
+
+\subsection{Relation to Semiring Frameworks}
+
+Semiring-based approaches provide another algebraic way to model path problems. A semiring defines two operations that can be used to combine
+alternative paths and to concatenate path weights. Depending on the chosen semiring, this can support tasks such as path counting, shortest-path computation, or probabilistic analysis \cite{rodriguez2011,garcia2022}.
+
+The path algebra shares the idea of using algebraic operations for path composition, but its purpose is different. Instead of assigning a value to each path and aggregating these values, the path algebra treats the paths themselves as query objects. Its operators therefore describe how path sets are constructed, filtered, and combined \cite{angles2024path}.
+
+The two approaches can therefore be viewed as complementary. Semiring frameworks are useful when paths need to be evaluated quantitatively, while the path algebra focuses on the structural and logical representation of path queries.
